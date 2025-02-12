@@ -15,18 +15,6 @@ def getRepoName() {
     return 'UNKNOWN'
 }
 
-def getRepoNameGit() {
-    def remoteName = sh(script: 'git remote', returnStdout: true).trim()
-    echo "Remote Name: ${remoteName}"
-    if (remoteName) {
-        def repoUrl = sh(script: "git remote get-url ${remoteName}", returnStdout: true).trim()
-        echo "Remote URL: ${repoUrl}"
-        return repoUrl.tokenize('/').last().replace('.git', '')
-    }
-    echo "No remote name found"
-    return 'UNKNOWN'
-}
-
 def getMavenProjectName() {
     def pomContent = readFile('app/pom.xml')
     def matcher = pomContent =~ /<name>(.+?)<\/name>/
@@ -34,8 +22,8 @@ def getMavenProjectName() {
 }
 
 def getNpmProjectName() {
-    def packageContent = readFile('package.json')
-    return packageJson.name ?: 'UNKNOWN'
+    def packageContent = readJSON(file: 'package.json')
+    return packageContent.name ?: 'UNKNOWN'
 }
 
 def getProjectName(projectType) {
