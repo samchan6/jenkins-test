@@ -54,14 +54,14 @@ def getBranchName() {
 
 def setEnvVars() {
     env.SCANNER_HOME = tool 'SonarQubeScanner'
-    env.PROJECT_TYPE = getProjectType()
-    env.PROJECT_NAME = getProjectName(PROJECT_TYPE)
-    env.BRANCH_NAME = getBranchName()
-    env.REPO_NAME = getRepoName()
-    env.PROJECT_KEY = getRepoName().toUpperCase()
-    env.COMMIT_AUTHOR_NAME = getAuthor()
-    env.COMMIT_AUTHOR_EMAIL = getAuthorEmail()
-    env.COMMIT_TIME = getCommitTime()
+    env.PROJECT_TYPE = checkoutUtils.getProjectType()
+    env.PROJECT_NAME = checkoutUtils.getProjectName(PROJECT_TYPE)
+    env.BRANCH_NAME = checkoutUtils.getBranchName()
+    env.REPO_NAME = checkoutUtils.getRepoName()
+    env.PROJECT_KEY = checkoutUtils.getRepoName().toUpperCase()
+    env.COMMIT_AUTHOR_NAME = checkoutUtils.getAuthor()
+    env.COMMIT_AUTHOR_EMAIL = checkoutUtils.getAuthorEmail()
+    env.COMMIT_TIME = checkoutUtils.getCommitTime()
 }
 
 def printCheckoutInfo() {
