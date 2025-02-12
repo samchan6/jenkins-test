@@ -52,6 +52,18 @@ def getBranchName() {
     return sh(script: 'git log -1 --pretty=format:%D | grep -o "[^,]*" | tail -n 1 | sed "s|.*/||" ', returnStdout: true).trim()
 }
 
+def setEnvVars() {
+    SCANNER_HOME = tool 'SonarQubeScanner'
+    PROJECT_TYPE = getProjectType()
+    PROJECT_NAME = getProjectName(PROJECT_TYPE)
+    BRANCH_NAME = getBranchName()
+    REPO_NAME = getRepoName()
+    PROJECT_KEY = getRepoName().toUpperCase()
+    COMMIT_AUTHOR_NAME = getAuthor()
+    COMMIT_AUTHOR_EMAIL = getAuthorEmail()
+    COMMIT_TIME = getCommitTime()
+}
+
 def printCheckoutInfo() {
     if (env.PROJECT_TYPE == 'UNKNOWN') {
         error 'Unknown project'
