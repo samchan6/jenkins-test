@@ -1,8 +1,8 @@
-def buildMaven() {
-    echo 'Maven Build'
+def buildMaven(String pomLocation = "$WORKSPACE/app") {
+    echo 'Maven Build with pomLocation: ${pomLocation}'
     configFileProvider([configFile(fileId: 'bbbe1198-7511-421a-b98d-13af7cc08480', variable: 'MAVEN_SETTINGS')]) {
         sh '''
-        cd $WORKSPACE/app
+        cd ${pomLocation}
         mvn -s $MAVEN_SETTINGS clean install \
             -Dmaven.wagon.http.ssl.insecure=true \
             -X
