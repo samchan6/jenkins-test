@@ -1,8 +1,27 @@
+def sanaCommonSubrepos = [
+    'sana_common_lib',
+    'sana_common_test',
+    'sana_parent',
+    'sana_starter_ms_graph',
+    'sana_starter_validation'
+]
+
+def isSanaCommonProject() {
+    for (subrepo in sanaCommonSubrepos) {
+        if (!fileExists("${subrepo}/pom.xml")) {
+            return false
+        }
+    }
+    return true
+}
+
 def getProjectType() {
     if (fileExists('app/pom.xml')) {
         return 'MAVEN'
     } else if (fileExists('package.json')) {
         return 'NPM'
+    } else if (isSanaCommonProject()) {
+        return 'SANA_COMMON'
     } else {
         return 'UNKNOWN'
     }
@@ -31,6 +50,8 @@ def getProjectName(projectType) {
         return getMavenProjectName()
     } else if (projectType == 'NPM') {
         return getNpmProjectName()
+    } else if (projectType == 'SANA_COMMON') {
+        return 'sana-common'
     } else {
         return 'UNKNOWN'
     }
