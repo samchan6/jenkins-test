@@ -1,8 +1,9 @@
-def buildMaven(String pomLocation = "$WORKSPACE/app") {
+def buildMaven(String pomLocation = "$WORKSPACE/app", Boolean exportJdk = false) {
     echo "Maven Build with pomLocation: ${pomLocation}"
     configFileProvider([configFile(fileId: 'bbbe1198-7511-421a-b98d-13af7cc08480', variable: 'MAVEN_SETTINGS')]) {
+        def exportCommand = exportJdk ? "export JAVA_HOME=/opt/java/openjdk" : ""
         sh """
-        export JAVA_HOME=/opt/java/openjdk
+        ${exportCommand}
         cd ${pomLocation}
         mvn -s $MAVEN_SETTINGS clean install \
             -Dmaven.wagon.http.ssl.insecure=true \
@@ -12,14 +13,15 @@ def buildMaven(String pomLocation = "$WORKSPACE/app") {
     }
 }
 
-def buildNpm() {
-    echo 'NPM Build'
-    sh '''
+def buildNpm(String packageLocation = "$WORKSPACE") {
+    echo "NPM Build in ${packageLocation}"
+    sh """
+        cd ${packageLocation}
         rm package-lock.json
         npm cache clean --force
         npm install
-    '''
+    """
 
-    sh 'CI=false npm run build'
-    sh 'npm test -- --coverage'
+    sh "cd ${packageLocation} && CI=false npm run build"
+    sh "cd ${packageLocation} && npm test -- --coverage"
 }
