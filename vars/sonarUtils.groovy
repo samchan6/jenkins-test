@@ -34,6 +34,28 @@ def centralScan() {
     }
 }
 
+def scanMaven(String projectName, String appFolder = "$WORKSPACE/app") {
+    withSonarQubeEnv('SonarQube') {
+        echo "Running sonar scan for ${projectName}; appFolder: ${appFolder}"
+        sh """
+        $SCANNER_HOME/bin/sonar-scanner -X \
+        -Dsonar.projectKey=${projectName} \
+        -Dsonar.projectName="Netop (${projectName})" \
+        -Dsonar.projectVersion=1.0 \
+        -Dsonar.sources=${appFolder}/src/main/java \
+        -Dsonar.tests=${appFolder}/src/test/java \
+        -Dsonar.java.binaries=${appFolder}/target/classes \
+        -Dsonar.java.test.binaries=${appFolder}/target/test-classes \
+        -Dsonar.exclusions=/model/ \
+        -Dsonar.core.codeCoveragePlugin=jacoco \
+        -Dsonar.dynamicAnalysis=reuseReports \
+        -Dsonar.java.source=1.8 \
+        -Dsonar.sourceEncoding=UTF-8 \
+        -Dsonar.ws.timeout=600
+        """
+    }
+}
+
 def setQGInfo() {
     def qg = waitForQualityGate()
     env.SONAR_QG_STATUS = qg.status
