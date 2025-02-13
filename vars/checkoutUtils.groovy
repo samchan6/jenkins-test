@@ -1,4 +1,6 @@
-def sanaCommonSubrepos = [
+import groovy.transform.Field
+
+@Field def sanaCommonSubrepos = [
     'sana_common_lib',
     'sana_common_test',
     'sana_parent',
