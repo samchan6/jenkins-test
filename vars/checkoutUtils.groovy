@@ -22,6 +22,8 @@ def getProjectType() {
         return 'MAVEN'
     } else if (fileExists('package.json')) {
         return 'NPM'
+    } else if (fileExists('app/package.json')) {
+        return 'NPM_APP'
     } else if (isSanaCommonProject()) {
         return 'SANA_COMMON'
     } else {
@@ -42,8 +44,8 @@ def getMavenProjectName() {
     return matcher ? matcher[0][1] : 'UNKNOWN'
 }
 
-def getNpmProjectName() {
-    def packageContent = readJSON(file: 'package.json')
+def getNpmProjectName(String packageLocation = '.') {
+    def packageContent = readJSON(file: "${packageLocation}/package.json")
     return packageContent.name ?: 'UNKNOWN'
 }
 
@@ -52,6 +54,8 @@ def getProjectName(projectType) {
         return getMavenProjectName()
     } else if (projectType == 'NPM') {
         return getNpmProjectName()
+    } else if (projectType == 'NPM_APP') {
+        return getNpmProjectName('app')
     } else if (projectType == 'SANA_COMMON') {
         return 'sana-common'
     } else {
